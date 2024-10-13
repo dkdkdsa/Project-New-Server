@@ -8,6 +8,9 @@ namespace Project_New_Server
     {
         public static void Main(string[] args)
         {
+
+            ShopContainer.SetUp();
+
             var builder = WebApplication.CreateBuilder(args);
 
             SetUpBuilder(builder);

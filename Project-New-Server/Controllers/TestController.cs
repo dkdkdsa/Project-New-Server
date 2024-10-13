@@ -34,6 +34,7 @@ namespace Project_New_Server.Controllers
         public async Task<ActionResult> Testing()
         {
 
+            Request.Headers.
             var str = await _db.GetStringAsync("1");
             return Ok(str);
 

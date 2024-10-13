@@ -59,7 +59,7 @@ namespace Project_New_Server.Controllers
                 .FirstOrDefaultAsync();
 
             if (obj == null)
-                return BadRequest();
+                return Ok("Please Add User");
 
             return new JsonResult(CreateUserInfo(obj));
 
