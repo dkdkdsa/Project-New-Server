@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_New_Server.Context;
@@ -23,11 +24,13 @@ namespace Project_New_Server.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddUser([FromBody] string id)
+        public async Task<IActionResult> AddUser()
         {
 
+            var playerId = HttpContext.Items["PlayerId"].ToString();
+
             var obj = await _context.Users
-                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, id)
+                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, playerId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -37,7 +40,7 @@ namespace Project_New_Server.Controllers
             try
             {
 
-                await _context.Users.AddAsync(new UserData(id));
+                await _context.Users.AddAsync(new UserData(playerId));
                 await _context.SaveChangesAsync();
                 return Ok();
 
@@ -50,16 +53,18 @@ namespace Project_New_Server.Controllers
         }
 
         [HttpGet("GetData")]
-        public async Task<IActionResult> GetUserData(string id)
+        public async Task<IActionResult> GetUserData()
         {
 
+            var playerId = HttpContext.Items["PlayerId"].ToString();
+
             var obj = await _context.Users
-                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, id)
+                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, playerId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (obj == null)
-                return Ok("Please Add User");
+                return Unauthorized("Please Add User");
 
             return new JsonResult(CreateUserInfo(obj));
 

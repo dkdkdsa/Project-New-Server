@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Project_New_Server.Controllers
 {
@@ -10,35 +11,17 @@ namespace Project_New_Server.Controllers
     public class TestController : ControllerBase
     {
 
-        private readonly IDistributedCache _db;
 
-        public TestController(IDistributedCache db)
-        {
-            _db = db;
-        }
-
-        [HttpGet]
-        public ActionResult Index()
+        [HttpPost("A")]
+        public IActionResult Testssssss([FromBody] string id)
         {
 
-            var options = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // 10분간 캐싱
-            };
-            _db.SetStringAsync("1", "김성호는 나다", options);
-            return Ok("김성호는 누구");
+            var hander = new JwtSecurityTokenHandler();
+            var token = hander.ReadJwtToken(id);
+            return Ok(token.Claims.FirstOrDefault(x=> x.Type == "sub"));
 
         }
 
-        [HttpGet("E")]
-        public async Task<ActionResult> Testing()
-        {
-
-            Request.Headers.
-            var str = await _db.GetStringAsync("1");
-            return Ok(str);
-
-        }
 
     }
 }

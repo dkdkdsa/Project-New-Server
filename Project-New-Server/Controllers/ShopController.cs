@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_New_Server.Context;
@@ -24,22 +25,26 @@ namespace Project_New_Server.Controllers
         }
 
         [HttpPost("BuyTower")]
-        public async Task<IActionResult> BuyTower([FromBody] ShopReqest data)
+        public async Task<IActionResult> BuyTower([FromBody] ShopData data)
         {
 
+            var playerId = HttpContext.Items["PlayerId"].ToString();
+
+            Console.WriteLine(data == null ? "NULL" : data);
+
             var obj = await _context.Users
-                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, data.Id)
+                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, playerId)
                 .FirstOrDefaultAsync();
 
-            if (obj == null || !ShopContainer.Container.ContainsKey(data.Target))
+            if (obj == null || !ShopContainer.Container.ContainsKey(data.Name))
                 return BadRequest();
 
             //Check
-            if(obj.Coin < ShopContainer.Container[data.Target] || obj.Towers.Contains(data.Target))
+            if(obj.Coin < ShopContainer.Container[data.Name] || obj.Towers.Contains(data.Name))
                 return Unauthorized();
 
-            obj.Coin -= ShopContainer.Container[data.Target];
-            obj.Towers.Add(data.Target);
+            obj.Coin -= ShopContainer.Container[data.Name];
+            obj.Towers.Add(data.Name);
 
             await _context.SaveChangesAsync();
 

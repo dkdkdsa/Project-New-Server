@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace SharedData
 {
+    [Serializable]
     public class UserInfo
     {
 
-        public ulong Coin { get; init; }
-        public ulong Jam { get; init; }
-        public IReadOnlyList<string> Decks { get; init; }
-        public IReadOnlyList<string> Towers { get; init; }
+        public ulong Coin { get => coin; init => coin = value; }
+        public ulong Jam { get => jam; init => jam = value; }
+        public IReadOnlyList<string> Decks { get => deck; init => deck = value.ToList(); }
+        public IReadOnlyList<string> Towers { get => towers; init => towers = value.ToList(); }
+
+        public ulong coin;
+        public ulong jam;
+        public List<string> deck;
+        public List<string> towers;
 
     }
 }

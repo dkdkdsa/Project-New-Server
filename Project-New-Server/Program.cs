@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Project_New_Server.Context;
+using Project_New_Server.Middleware;
 
 namespace Project_New_Server
 {
@@ -27,6 +28,7 @@ namespace Project_New_Server
         {
 
             builder.Services.AddControllers();
+            builder.Services.AddAuthentication();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<UserContext>(x =>
@@ -49,8 +51,15 @@ namespace Project_New_Server
                 app.UseSwaggerUI();
             }
 
+
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+            {
+                appBuilder.UseMiddleware<AuthMiddleware>();
+            });
+
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
