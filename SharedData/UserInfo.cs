@@ -12,12 +12,12 @@ namespace SharedData
 
         public ulong Coin { get => coin; init => coin = value; }
         public ulong Jam { get => jam; init => jam = value; }
-        public IReadOnlyList<string> Decks { get => deck; init => deck = value.ToList(); }
+        public IReadOnlyList<string> Decks { get => decks; init => decks = value.ToList(); }
         public IReadOnlyList<string> Towers { get => towers; init => towers = value.ToList(); }
 
         public ulong coin;
         public ulong jam;
-        public List<string> deck;
+        public List<string> decks;
         public List<string> towers;
 
     }

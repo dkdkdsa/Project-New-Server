@@ -70,6 +70,27 @@ namespace Project_New_Server.Controllers
 
         }
 
+        [HttpPost("SetDeck")]
+        public async Task<IActionResult> SetDeck([FromBody] DeckInfo info)
+        {
+
+            var playerId = HttpContext.Items["PlayerId"].ToString();
+
+            var obj = await _context.Users
+                .FromSqlRaw(SQL_QUERY_FIND_USER_ID, playerId)
+                .FirstOrDefaultAsync();
+
+            if (obj == null)
+                return Unauthorized();
+
+            obj.Decks = info.Elements;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
+
         private UserInfo CreateUserInfo(UserData user)
         {
 
